@@ -1,1 +1,2 @@
-Перевірка чи працюють 2 віддалені репозиторії
+connected to db
+connect to jira
