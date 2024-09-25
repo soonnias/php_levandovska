@@ -17,3 +17,17 @@ use App\Http\Controllers\UserController;
 Route::resource('posts', PostController::class);
 Route::resource('categories', CategoryController::class);
 Route::resource('users', UserController::class);
+
+use App\Http\Controllers\CommentController;
+
+// Додати маршрут для встановлення користувача
+Route::post('set-user', function () {
+    session(['user_id' => 2]); // Встановіть ID користувача, якого хочете використовувати (тут 1 - це приклад)
+    return redirect()->back()->with('success', 'Користувача встановлено.');
+})->name('set.user');
+
+
+Route::resource('comments', CommentController::class)->only(['index', 'store', 'destroy']);
+Route::get('posts/{post}/comments', [CommentController::class, 'index'])->name('comments.index');
+Route::post('posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
+Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');

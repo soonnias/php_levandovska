@@ -25,5 +25,7 @@
         @method('DELETE')
         <button type="submit" class="btn btn-danger">Видалити пост</button>
     </form>
+
+    <a href="{{ route('comments.index', $post) }}" class="btn btn-info">Перейти до коментарів</a>
 </div>
 @endsection
