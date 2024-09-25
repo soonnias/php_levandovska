@@ -9,11 +9,43 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Отримує всі пости і передає їх у вигляд
-        $posts = Post::all();
-        return view('posts.index', compact('posts'));
+        $query = Post::query();
+
+        // Пошук за заголовком
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->input('search') . '%');
+        }
+
+        // Сортування
+        if ($request->filled('sort_option')) {
+            $sortOption = $request->input('sort_option');
+
+            // Якщо вибрано сортування за заголовком
+            if ($sortOption === 'asc' || $sortOption === 'desc') {
+                $query->orderBy('title', $sortOption);
+            }
+
+            // Якщо вибрано сортування за датою
+            if ($sortOption === 'new' || $sortOption === 'old') {
+                $query->orderBy('created_at', $sortOption === 'new' ? 'desc' : 'asc');
+            }
+        }
+
+        // Фільтрація за категоріями
+        if ($request->filled('categories')) {
+            $query->whereHas('categories', function ($query) use ($request) {
+                $query->whereIn('categories.category_id', $request->input('categories'));
+            });
+        }
+
+        // Отримуємо категорії для фільтрації
+        $categories = Category::all(); // Змініть на ваш шлях отримання категорій
+
+        $posts = $query->paginate(10); // Або інше число для пагінації
+
+        return view('posts.index', compact('posts', 'categories'));
     }
 
     public function create()

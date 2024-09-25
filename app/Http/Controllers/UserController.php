@@ -10,9 +10,28 @@ use Illuminate\Support\Facades\Log;
 class UserController extends Controller
 {
     // Перегляд усіх користувачів
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
+        $query = User::query();
+
+        // Пошук за username
+        if ($request->filled('search')) {
+            $query->where('username', 'like', '%' . $request->input('search') . '%');
+        }
+
+        // Сортування
+        if ($request->filled('sort')) {
+            $query->orderBy('username', $request->input('sort'));
+        }
+
+        // Фільтрація за роллю
+        if ($request->filled('role')) {
+            $query->where('role', $request->input('role'));
+        }
+
+        //$users = $query->paginate(10); // Або інше число для пагінації
+        $users = $query->get();
+
         return view('users.index', compact('users'));
     }
 

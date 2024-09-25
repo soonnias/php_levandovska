@@ -7,11 +7,25 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::all();
+        $query = Category::query();
+
+        // Пошук
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // Сортування
+        if ($request->filled('sort') && in_array($request->sort, ['asc', 'desc'])) {
+            $query->orderBy('name', $request->sort);
+        }
+
+        $categories = $query->get();
+
         return view('categories.index', compact('categories'));
     }
+
 
     public function create()
     {
