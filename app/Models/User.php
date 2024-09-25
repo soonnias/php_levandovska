@@ -10,7 +10,7 @@ class User extends Model
     use HasFactory;
 
     protected $primaryKey = 'user_id';
-    protected $fillable = ['name', 'email', 'password', 'role'];
+    protected $fillable = ['username', 'email', 'password', 'role'];
     protected $hidden = ['password'];
 
     public function posts()

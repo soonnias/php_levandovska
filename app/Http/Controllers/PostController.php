@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -30,55 +31,67 @@ class PostController extends Controller
         // Валідація
         $request->validate([
             'title' => 'required|max:255',
-            'content' => 'required',
-            'category_id' => 'required|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'description' => 'required',
+            'category_ids' => 'required|array', // Змінили на масив
+            'category_ids.*' => 'exists:categories,category_id', // Валідація для кожної категорії
+            'image' => 'required|url',
         ]);
 
-        // Збереження зображення
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('images', 'public');
-        }
-
-        $user = User::find(1); // Або можете змінити ID на відповідний
+        $user = User::find(2); // Або можете змінити ID на відповідний
 
         // Створення поста
-        Post::create([
+        $post = Post::create([
             'title' => $request->title,
-            'content' => $request->content,
-            'category_id' => $request->category_id,
-            'user_id' => $user->id,
-            'image' => $imagePath, // Якщо зображення є
+            'description' => $request->description,
+            'user_id' => $user->user_id,
+            'image' => $request->image, 
         ]);
+
+        // Прив'язка категорій до поста
+        $post->categories()->attach($request->category_ids);
 
         return redirect()->route('posts.index')->with('success', 'Пост створено успішно');
     }
-    
 
     public function show(Post $post)
     {
-        // Повертає вигляд з деталями конкретного поста
+        // Завантажуємо категорії разом з постом
+        $post->load('categories');
         return view('posts.show', compact('post'));
     }
 
     public function edit(Post $post)
     {
-        // Повертає форму для редагування поста
-        return view('posts.edit', compact('post'));
+        // Отримуємо всі категорії
+        $categories = Category::all();
+
+        return view('posts.edit', compact('post', 'categories'));
     }
 
     public function update(Request $request, Post $post)
     {
-        // Валідовує нові дані і оновлює пост
         $request->validate([
-            'title' => 'required',
-            'content' => 'required',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'category_ids' => 'required|array',
+            'category_ids.*' => 'exists:categories,category_id', // Перевірка, що всі обрані категорії існують
+            'image' => 'required|url',
         ]);
 
-        $post->update($request->only(['title', 'content']));
-        return redirect()->route('posts.index');
+        // Оновлюємо заголовок та опис
+        $post->update($request->only(['title', 'description']));
+
+        // Оновлюємо категорії
+        $post->categories()->sync($request->category_ids);
+
+        // Оновлюємо зображення
+        $post->image = $request->image; // Зберігаємо новий URL зображення
+        $post->save(); // Зберігаємо зміни
+
+        return redirect()->route('posts.index')->with('success', 'Пост успішно оновлено!');
     }
+
+
 
     public function destroy(Post $post)
     {

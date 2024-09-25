@@ -1,0 +1,98 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log; 
+
+class UserController extends Controller
+{
+    // Перегляд усіх користувачів
+    public function index()
+    {
+        $users = User::all();
+        return view('users.index', compact('users'));
+    }
+
+    // Відображення форми для створення нового користувача
+    public function create()
+    {
+        return view('users.create');
+    }
+
+    // Збереження нового користувача
+    public function store(Request $request)
+    {
+         // Додай логування для відслідковування
+        Log::info('User creation started');
+
+        $request->validate([
+            'username' => 'required|unique:users|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6|confirmed',
+            'role' => 'required|in:admin,user',
+        ]);
+
+        Log::info('Validation passed');
+
+        try {
+            User::create([
+                'username' => $request->username,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => $request->role,
+            ]);
+    
+            Log::info('User created successfully');
+        } catch (\Exception $e) {
+            Log::error('Error creating user: ' . $e->getMessage());
+            return back()->withErrors('Error creating user');
+        }
+
+        Log::info('Redirecting to users.index');
+
+        return redirect()->route('users.index')->with('success', 'Користувача створено успішно');
+    }
+
+    // Відображення форми для редагування користувача
+    public function edit(User $user)
+    {
+        return view('users.edit', compact('user'));
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $request->validate([
+            'username' => 'required|unique:users,username,' . $user->user_id . ',user_id',// Оновлене правило для username
+            'email' => 'required|email|unique:users,email,' . $user->user_id . ',user_id',
+            'password' => 'nullable|min:6|confirmed',
+            'role' => 'required|in:admin,user',
+        ]);
+
+        // Оновлюємо дані користувача, якщо вони були надані
+        $user->update([
+            'username' => $request->username,
+            'email' => $request->email,
+            'role' => $request->role,
+            // Якщо пароль був введений, оновлюємо його, інакше залишаємо старий пароль
+            'password' => $request->password ? Hash::make($request->password) : $user->password,
+        ]);
+
+        return redirect()->route('users.index')->with('success', 'Користувача оновлено успішно');
+    }
+
+    // Видалення користувача
+    public function destroy(User $user)
+    {
+        $user->delete();
+        return redirect()->route('users.index')->with('success', 'Користувача видалено');
+    }
+
+    public function show(User $user)
+    {
+        return view('users.show', compact('user'));
+    }
+
+}

@@ -1,8 +1,7 @@
-{{-- resources/views/posts/index.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <h1>Пости</h1>
     <a href="{{ route('posts.create') }}" class="btn btn-primary">Додати пост</a>
 
@@ -15,27 +14,33 @@
             <tr>
                 <th>Заголовок</th>
                 <th>Категорія</th>
-                <th>Зображення</th>
+                <th>Дата створення</th>
                 <th>Дії</th>
+                <th>Деталі</th>
             </tr>
         </thead>
         <tbody>
             @foreach($posts as $post)
                 <tr>
                     <td>{{ $post->title }}</td>
-                    <td>{{ $post->category->name ?? 'Без категорії' }}</td>
                     <td>
-                        @if($post->image_path)
-                            <img src="{{ asset('storage/' . $post->image_path) }}" width="100" alt="{{ $post->title }}">
+                        @if($post->categories->isNotEmpty())
+                            {{ implode(', ', $post->categories->pluck('name')->toArray()) }}
+                        @else
+                            Без категорії
                         @endif
                     </td>
+                    <td>{{ $post->created_at->format('d-m-Y H:i') }}</td>
                     <td>
                         <a href="{{ route('posts.edit', $post) }}" class="btn btn-warning">Редагувати</a>
-                        <form action="{{ route('posts.destroy', $post) }}" method="POST" style="display:inline;">
+                        <form action="{{ route('posts.destroy', $post) }}" method="POST" style="display:inline;" onsubmit="return confirm('Ви впевнені, що хочете видалити цей пост?');">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">Видалити</button>
                         </form>
+                    </td>
+                    <td>
+                        <a href="{{ route('posts.show', $post) }}" class="btn btn-info">Переглянути</a>
                     </td>
                 </tr>
             @endforeach

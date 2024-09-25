@@ -4,31 +4,51 @@
 <div class="container">
     <h1>Створити новий пост</h1>
 
-    <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
+    {{-- Виведення повідомлень про помилки валідації --}}
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="{{ route('posts.store') }}" method="POST">
         @csrf
         <div class="mb-3">
             <label for="title" class="form-label">Заголовок</label>
             <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}" required>
         </div>
         <div class="mb-3">
-            <label for="content" class="form-label">Контент</label>
-            <textarea class="form-control" id="content" name="content" required>{{ old('content') }}</textarea>
+            <label for="description" class="form-label">Контент</label>
+            <textarea class="form-control" id="description" name="description" required>{{ old('description') }}</textarea>
         </div>
+        
+        {{-- Вибір категорій через чекбокси --}}
         <div class="mb-3">
-            <label for="category_id" class="form-label">Категорія</label>
-            <select class="form-select" id="category_id" name="category_id" required>
-                <option value="">Виберіть категорію</option>
+            <label class="form-label">Категорії</label>
+            <div>
                 @foreach($categories as $category)
-                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                        {{ $category->name }}
-                    </option>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="category_{{ $category->category_id }}" name="category_ids[]" value="{{ $category->category_id }}" 
+                            {{ in_array($category->category_id, old('category_ids', [])) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="category_{{ $category->category_id }}">
+                            {{ $category->name }}
+                        </label>
+                    </div>
                 @endforeach
-            </select>
+            </div>
         </div>
+
+        
+        {{-- Поле для введення посилання на зображення --}}
         <div class="mb-3">
-            <label for="image" class="form-label">Зображення</label>
-            <input type="file" class="form-control" id="image" name="image">
+            <label for="image" class="form-label">Посилання на зображення</label>
+            <input type="url" class="form-control" id="image" name="image" value="{{ old('image') }}" required>
         </div>
+
         <button type="submit" class="btn btn-success">Створити пост</button>
         <a href="{{ route('posts.index') }}" class="btn btn-secondary">Скасувати</a>
     </form>
