@@ -9,6 +9,23 @@ use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
+    public function setCurrent(Request $request)
+    {
+        // Валідація запиту
+        $request->validate([
+            'current_user_id' => 'required|exists:users,user_id', // Перевірка наявності користувача
+        ]);
+
+        // Зберігаємо поточного користувача в сесії або іншому місці, де вам потрібно
+        $currentUserId = $request->input('current_user_id');
+        
+        // Збережіть ID поточного користувача в сесії
+        session(['current_user_id' => $currentUserId]);
+
+        // Повертаємо назад з повідомленням про успіх
+        return redirect()->route('users.index')->with('success', 'Поточний користувач встановлено успішно.');
+    }
+
     // Перегляд усіх користувачів
     public function index(Request $request)
     {

@@ -66,9 +66,49 @@
                         </div>
                     @endif
                 </div>
-            </div>
-            
+            </div>           
         </form>
+
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        <div class="mb-3">
+            @if(session('current_user_id'))
+                @php
+                    $currentUser = $users->firstWhere('user_id', session('current_user_id'));
+                @endphp
+                <strong>Поточний користувач:</strong> {{ $currentUser ? $currentUser->username : 'Невідомий' }}
+            @else
+                <strong>Поточний користувач:</strong> Немає
+            @endif
+        </div>
+        
+        <form method="POST" action="{{ route('users.setCurrent') }}" class="mb-3">
+            @csrf
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <select name="current_user_id" id="current_user" class="form-select" style="width:auto;">
+                        <option value="">Виберіть користувача</option>
+                        @foreach($users as $user)
+                            <option value="{{ $user->user_id }}">{{ $user->username }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-success">Встановити поточного користувача</button>
+                </div>
+            </div>
+        </form>
+        
 
     <table class="table mt-3">
         <thead>
@@ -81,7 +121,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($users as $user)
+            @foreach($users->reverse() as $user)
             <tr>
                 <td>{{ $user->user_id }}</td>
                 <td>{{ $user->username }}</td>

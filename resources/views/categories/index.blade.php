@@ -69,7 +69,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($categories as $category)
+            @foreach($categories->reverse() as $category)
                 <tr>
                     <td>{{ $category->name }}</td>
                     <td>

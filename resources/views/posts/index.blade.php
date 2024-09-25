@@ -95,7 +95,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($posts as $post)
+            @foreach($posts->reverse() as $post)
                 <tr>
                     <td>{{ $post->title }}</td>
                     <td>

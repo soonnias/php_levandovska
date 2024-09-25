@@ -22,8 +22,8 @@ class CommentController extends Controller
 
         $comment = new Comment([
             'content' => $request->input('content'),
-            'post_id' => $post->id,
-            'user_id' => session('user_id'), // Ідентифікатор користувача, який коментує
+            'post_id' => $post->post_id,
+            'user_id' => session('current_user_id'), // Ідентифікатор користувача, який коментує
         ]);
         $comment->save();
 
