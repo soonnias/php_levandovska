@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 // default path
 Route::get('/', function(){
-    return view('posts');
+    return redirect()->route('posts.index');
 });
 
 use App\Http\Controllers\PostController;
@@ -28,3 +28,7 @@ Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->name
 Route::post('/likes', [LikeController::class, 'store'])->name('likes.store');
 Route::delete('/likes/{post}/{user}', [LikeController::class, 'destroy'])->name('likes.destroy');
 
+// Обробка неіснуючих маршрутів
+Route::fallback(function() {
+    return redirect()->route('posts.index'); 
+});
