@@ -4,7 +4,7 @@
 <div class="container">
     <h1>Створити новий пост</h1>
 
-    {{-- Виведення повідомлень про помилки валідації --}}
+    {{-- помилки валідації --}}
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -41,9 +41,8 @@
                 @endforeach
             </div>
         </div>
-
-        
-        {{-- Поле для введення посилання на зображення --}}
+  
+        {{-- зображення --}}
         <div class="mb-3">
             <label for="image" class="form-label">Посилання на зображення</label>
             <input type="url" class="form-control" id="image" name="image" value="{{ old('image') }}" required>

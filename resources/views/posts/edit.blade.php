@@ -4,7 +4,7 @@
 <div class="container">
     <h1>Редагувати пост</h1>
 
-    {{-- Виведення повідомлень про помилки валідації --}}
+    {{-- помилки валідації --}}
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul>

@@ -11,22 +11,20 @@ class UserController extends Controller
 {
     public function setCurrent(Request $request)
     {
-        // Валідація запиту
         $request->validate([
-            'current_user_id' => 'required|exists:users,user_id', // Перевірка наявності користувача
+            'current_user_id' => [
+                'required',
+                'exists:users,user_id',
+            ]
         ]);
 
-        // Зберігаємо поточного користувача в сесії або іншому місці, де вам потрібно
+        // Збереження поточного користувача в сесії
         $currentUserId = $request->input('current_user_id');
-        
-        // Збережіть ID поточного користувача в сесії
         session(['current_user_id' => $currentUserId]);
 
-        // Повертаємо назад з повідомленням про успіх
         return redirect()->route('users.index')->with('success', 'Поточний користувач встановлено успішно.');
     }
 
-    // Перегляд усіх користувачів
     public function index(Request $request)
     {
         $query = User::query();
@@ -46,30 +44,44 @@ class UserController extends Controller
             $query->where('role', $request->input('role'));
         }
 
-        //$users = $query->paginate(10); // Або інше число для пагінації
+        //$users = $query->paginate(10);
         $users = $query->get();
 
         return view('users.index', compact('users'));
     }
 
-    // Відображення форми для створення нового користувача
+
     public function create()
     {
         return view('users.create');
     }
 
-    // Збереження нового користувача
+
     public function store(Request $request)
     {
-         // Додай логування для відслідковування
         Log::info('User creation started');
 
         $request->validate([
-            'username' => 'required|unique:users|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed',
-            'role' => 'required|in:admin,user',
-        ]);
+            'username' => [
+                'required',
+                'unique:users',
+                'max:255',
+            ],
+            'email' => [
+                'required',
+                'email',
+                'unique:users,email',
+            ],
+            'password' => [
+                'required',
+                'min:6',
+                'confirmed',
+            ],
+            'role' => [
+                'required',
+                'in:admin,user',
+            ],
+        ]);        
 
         Log::info('Validation passed');
 
@@ -92,7 +104,7 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'Користувача створено успішно');
     }
 
-    // Відображення форми для редагування користувача
+
     public function edit(User $user)
     {
         return view('users.edit', compact('user'));
@@ -101,25 +113,36 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $request->validate([
-            'username' => 'required|unique:users,username,' . $user->user_id . ',user_id',// Оновлене правило для username
-            'email' => 'required|email|unique:users,email,' . $user->user_id . ',user_id',
-            'password' => 'nullable|min:6|confirmed',
-            'role' => 'required|in:admin,user',
-        ]);
+            'username' => [
+                'required',
+                'unique:users,username,' . $user->user_id . ',user_id',
+            ],
+            'email' => [
+                'required',
+                'email',
+                'unique:users,email,' . $user->user_id . ',user_id',
+            ],
+            'password' => [
+                'nullable',
+                'min:6',
+                'confirmed',
+            ],
+            'role' => [
+                'required',
+                'in:admin,user',
+            ],
+        ]);        
 
-        // Оновлюємо дані користувача, якщо вони були надані
         $user->update([
             'username' => $request->username,
             'email' => $request->email,
             'role' => $request->role,
-            // Якщо пароль був введений, оновлюємо його, інакше залишаємо старий пароль
             'password' => $request->password ? Hash::make($request->password) : $user->password,
         ]);
 
         return redirect()->route('users.index')->with('success', 'Користувача оновлено успішно');
     }
 
-    // Видалення користувача
     public function destroy(User $user)
     {
         $user->delete();

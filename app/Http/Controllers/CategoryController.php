@@ -22,10 +22,8 @@ class CategoryController extends Controller
         }
 
         $categories = $query->get();
-
         return view('categories.index', compact('categories'));
     }
-
 
     public function create()
     {
@@ -35,12 +33,14 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|unique:categories,name|max:255',
-        ]);
-        
+            'name' => [
+                'required',
+                'unique:categories,name',
+                'max:255',
+            ],
+        ]);        
 
         Category::create($request->only('name'));
-
         return redirect()->route('categories.index')->with('success', 'Категорію успішно створено!');
     }
 
@@ -52,11 +52,14 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $request->validate([
-            'name' => 'required|unique:categories,name|max:255',
-        ]);        
+            'name' => [
+                'required',
+                'unique:categories,name',
+                'max:255',
+            ],
+        ]);
 
         $category->update($request->only('name'));
-
         return redirect()->route('categories.index')->with('success', 'Категорію успішно оновлено!');
     }
 

@@ -12,7 +12,7 @@ class LikeController extends Controller
     {
         $like = new Like();
         $like->post_id = $request->post_id;
-        $like->user_id = session('current_user_id'); // Використовуйте ID користувача з сесії
+        $like->user_id = session('current_user_id'); // ID користувача з сесії
         $like->save();
 
         return redirect()->back()->with('success', 'Ви лайкнули пост!');

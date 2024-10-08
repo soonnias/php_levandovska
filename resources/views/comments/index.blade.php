@@ -18,9 +18,9 @@
     @foreach($comments->reverse() as $comment)
         <div class="card mt-2">
             <div class="card-body">
-                <p><strong>{{ $comment->user->username }}</strong></p> <!-- Username -->
-                <p>{{ $comment->content }}</p> <!-- Comment content -->
-                <p class="text-muted" style="font-size: 0.8rem;">{{ $comment->created_at->format('d-m-Y H:i') }}</p> <!-- Date and time -->
+                <p><strong>{{ $comment->user->username }}</strong></p> 
+                <p>{{ $comment->content }}</p> 
+                <p class="text-muted" style="font-size: 0.8rem;">{{ $comment->created_at->format('d-m-Y H:i') }}</p> 
                 <form action="{{ route('comments.destroy', $comment) }}" method="POST">
                     @csrf
                     @method('DELETE')

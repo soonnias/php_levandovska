@@ -21,11 +21,11 @@
         <img src="{{ $post->image }}" width="300" style="margin: 20px;" alt="{{ $post->title }}" onerror="this.onerror=null; this.src='{{ asset('images/placeholder.jpg') }}';">
     @endif
 
-    <p><strong>К-ть лайків:</strong> {{ $post->likes()->count() }}</p> <!-- Відображення кількості лайків -->
+    <p><strong>К-ть лайків:</strong> {{ $post->likes()->count() }}</p> <!-- Лайки -->
 
     @if(session('current_user_id')) <!-- Перевірка, чи є активний користувач -->
         @php
-            $liked = $post->likes()->where('user_id', session('current_user_id'))->exists(); // Перевірка, чи користувач вже лайкнув пост
+            $liked = $post->likes()->where('user_id', session('current_user_id'))->exists(); 
         @endphp
 
         <form action="{{ $liked ? route('likes.destroy', ['post' => $post, 'user' => session('current_user_id')]) : route('likes.store') }}" method="POST">
