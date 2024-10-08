@@ -28,3 +28,4 @@ class LikeController extends Controller
         return redirect()->back()->with('success', 'Ви видалили лайк з поста!');
     }
 }
+

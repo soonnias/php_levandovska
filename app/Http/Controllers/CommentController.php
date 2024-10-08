@@ -40,3 +40,4 @@ class CommentController extends Controller
         return redirect()->back()->with('success', 'Коментар успішно видалено.');
     }
 }
+
