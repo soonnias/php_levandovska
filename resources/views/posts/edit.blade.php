@@ -5,15 +5,7 @@
     <h1>Редагувати пост</h1>
 
     {{-- помилки валідації --}}
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+    @include('layouts.validation-errors')
 
     <form action="{{ route('posts.update', $post) }}" method="POST" enctype="multipart/form-data">
         @csrf

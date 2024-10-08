@@ -5,15 +5,7 @@
     <h1>Редагувати категорію</h1>
 
     {{-- помилки валідації --}}
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+    @include('layouts.validation-errors')
 
     <form action="{{ route('categories.update', $category) }}" method="POST">
         @csrf
