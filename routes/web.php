@@ -12,7 +12,9 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\UserPostController;
 
+Route::resource('userPosts', UserPostController::class);
 Route::resource('posts', PostController::class);
 Route::resource('categories', CategoryController::class);
 Route::resource('users', UserController::class);
@@ -32,3 +34,4 @@ Route::delete('/likes/{post}/{user}', [LikeController::class, 'destroy'])->name(
 Route::fallback(function() {
     return redirect()->route('posts.index'); 
 });
+
