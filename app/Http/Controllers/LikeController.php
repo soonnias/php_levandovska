@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Like;
 use App\Models\Post;
 
+use Illuminate\Support\Facades\Auth;
+
 class LikeController extends Controller
 {
     public function store(Request $request)
@@ -27,5 +29,23 @@ class LikeController extends Controller
 
         return redirect()->back()->with('success', 'Ви видалили лайк з поста!');
     }
+
+    public function toggle(Post $post)
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            if ($post->likes->contains($user)) {
+                $post->likes()->detach($user);
+            } else {
+                $post->likes()->attach($user);
+            }
+        } else {
+            return redirect()->route('login');
+        }
+
+        return back();
+    }
+
 }
 

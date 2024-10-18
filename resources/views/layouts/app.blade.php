@@ -26,6 +26,21 @@
                         <a class="nav-link" href="{{ route('users.index') }}">Користувачі</a>
                     </li>
                 </ul>
+
+                <!-- Додаємо блок із правого боку навігації -->
+                <ul class="navbar-nav ms-auto"> <!-- Використовуємо 'ms-auto', щоб прикріпити до правого краю -->
+                    @auth
+                        <li class="nav-item d-flex align-items-center">
+                            <span class="nav-link me-2">{{ Auth::user()->username }}</span> <!-- Ім'я користувача -->
+                            <form method="POST" action="{{ route('logout') }}" class="m-0 p-0">
+                                @csrf
+                                <button type="submit" class="btn btn-link nav-link p-0" style="cursor: pointer;">
+                                    Вийти
+                                </button>
+                            </form>
+                        </li>
+                    @endauth
+                </ul>
             </div>
         </div>
     </nav>

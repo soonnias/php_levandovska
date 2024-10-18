@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
+
 
 use Illuminate\Http\Request;
 
@@ -75,4 +77,5 @@ class UserPostController extends Controller
         $userLiked = true;
         return view('userPosts.show', compact('post', 'categories', 'userLiked'));
     } 
+    
 }

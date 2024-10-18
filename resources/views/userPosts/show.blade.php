@@ -77,16 +77,16 @@
                             <span class="px-2">·</span>
                             
                             <!-- Іконка лайка -->
-                            <form action="{{-- route('likes.toggle', $post->id) --}}"  style="display:inline;">
+                            <form action="{{ route('likes.toggle', $post) }}" method="POST" style="display:inline;">
                                 @csrf
                                 <button type="submit" class="btn btn-link p-0">
-                                    @if ($userLiked)
+                                    @if (auth()->user() && $post->likes->contains(auth()->user()))
                                         <i class="ti-heart text-danger"></i> <!-- Заповнене серце -->
                                     @else
                                         <i class="ti-heart"></i> <!-- Пусте серце -->
                                     @endif
                                 </button>
-                            </form>
+                            </form>                            
                         </small>
                     </div>
                     <div class="card-body border-top">
@@ -111,7 +111,8 @@
                         <!-- Comment Form -->
                         <h6 class="mt-5 mb-3 text-center"><a href="#" class="text-dark">Write Your Comment</a></h6>
                         <hr>
-                        <form>
+                        <!-- Форма для написання коментаря -->
+                        <form action="{{ route('comments.store', $post) }}" method="POST">
                             @csrf
                             <div class="form-row">
                                 <div class="col-12 form-group">
