@@ -14,7 +14,8 @@ class LikeController extends Controller
     {
         $like = new Like();
         $like->post_id = $request->post_id;
-        $like->user_id = session('current_user_id'); // ID користувача з сесії
+        //$like->user_id = session('current_user_id');  ID користувача з сесії
+        $like->user_id = Auth::id();
         $like->save();
 
         return redirect()->back()->with('success', 'Ви лайкнули пост!');
@@ -35,16 +36,25 @@ class LikeController extends Controller
         if (Auth::check()) {
             $user = Auth::user();
 
-            if ($post->likes->contains($user)) {
-                $post->likes()->detach($user);
+            // Перевіряємо, чи поточний користувач вже лайкнув цей пост
+            $like = Like::where('post_id', $post->post_id)->where('user_id', $user->user_id)->first();
+
+            if ($like) {
+                // Якщо лайк існує, видаляємо його
+                $like->delete();
+                return redirect()->back()->with('success', 'Ви видалили лайк з поста!');
             } else {
-                $post->likes()->attach($user);
+                // Якщо лайк не існує, створюємо новий
+                $newLike = new Like();
+                $newLike->post_id = $post->post_id;
+                $newLike->user_id = $user->user_id;
+                $newLike->save();
+
+                return redirect()->back()->with('success', 'Ви лайкнули пост!');
             }
         } else {
-            return redirect()->route('login');
+            return redirect()->route('login')->with('error', 'Вам потрібно увійти, щоб лайкнути пост.');
         }
-
-        return back();
     }
 
 }

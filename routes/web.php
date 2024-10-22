@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware([RoleMiddleware::class.':user'])->group(function () {
         Route::resource('userPosts', UserPostController::class)->only(['index', 'store', 'show', 'edit', 'update', 'destroy']);
         Route::post('posts/{post}/likes/toggle', [LikeController::class, 'toggle'])->name('likes.toggle');
+        Route::post('posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
     });
 
     // Доступ для 'admin' \
@@ -41,16 +42,15 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/users/set-current', [UserController::class, 'setCurrent'])->name('users.setCurrent');
 
-        // Коментарі
-        Route::resource('comments', CommentController::class)->only(['index', 'store', 'destroy']);
-        Route::get('posts/{post}/comments', [CommentController::class, 'index'])->name('comments.index');
-        Route::post('posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
-        Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
-
         // Лайки
         Route::post('/likes', [LikeController::class, 'store'])->name('likes.store');
         Route::delete('/likes/{post}/{user}', [LikeController::class, 'destroy'])->name('likes.destroy');
     });
+
+    // Коментарі
+    Route::get('posts/{post}/comments', [CommentController::class, 'index'])->name('comments.index');
+    Route::post('posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 });
 
 // Обробка неіснуючих маршрутів

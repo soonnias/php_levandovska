@@ -23,12 +23,12 @@
 
     <p><strong>К-ть лайків:</strong> {{ $post->likes()->count() }}</p> <!-- Лайки -->
 
-    @if(session('current_user_id')) <!-- Перевірка, чи є активний користувач -->
+    @if(Auth::check()) <!-- Перевірка, чи є активний користувач -->
         @php
-            $liked = $post->likes()->where('user_id', session('current_user_id'))->exists(); 
+            $liked = $post->likes()->where('user_id', Auth::id())->exists(); // Використовуйте Auth::id() для отримання ID активного користувача
         @endphp
 
-        <form action="{{ $liked ? route('likes.destroy', ['post' => $post, 'user' => session('current_user_id')]) : route('likes.store') }}" method="POST">
+        <form action="{{ $liked ? route('likes.destroy', ['post' => $post, 'user' => Auth::id()]) : route('likes.store') }}" method="POST">
             @csrf
             @if($liked)
                 @method('DELETE')
@@ -39,7 +39,7 @@
             @endif
         </form>
     @else
-        <p>Щоб лайкнути пост, будь ласка, спочатку оберіть користувача.</p>
+        <p>Щоб лайкнути пост, будь ласка, спочатку увійдіть в систему.</p> <!-- Змінив текст для більшої зрозумілості -->
     @endif
 
     <br>

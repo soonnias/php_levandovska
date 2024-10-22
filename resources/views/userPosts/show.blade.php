@@ -10,41 +10,11 @@
     <link rel="stylesheet" href="{{ asset('assets/vendors/themify-icons/css/themify-icons.css') }}">
     <!-- Bootstrap + main styles -->
 	<link rel="stylesheet" href="{{ asset('assets/css/joeblog.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
 </head>
 <body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
-     <!-- First Navigation -->
-     <nav class="navbar navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="{{ asset('assets/imgs/logo.svg') }}" alt="Logo">
-            </a>
-            <div class="socials">
-                <a href="#"><i class="ti-facebook"></i></a>
-                <a href="#"><i class="ti-twitter"></i></a>
-                <a href="#"><i class="ti-pinterest-alt"></i></a>
-                <a href="#"><i class="ti-instagram"></i></a>
-                <a href="#"><i class="ti-youtube"></i></a>
-            </div>
-        </div>
-    </nav>
-    <!-- End Of First Navigation -->
-
-    <!-- Page Second Navigation -->
-    <nav class="navbar custom-navbar navbar-expand-md navbar-light bg-primary sticky-top">
-        <div class="container">
-            <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav">                     
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('userPosts.index') }}">Posts</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <!-- End Of Page Second Navigation -->
+    @include('layouts.navigationUser')
 
     <!-- Page Header -->
     <header class="page-header page-header-mini">
@@ -79,14 +49,15 @@
                             <!-- Іконка лайка -->
                             <form action="{{ route('likes.toggle', $post) }}" method="POST" style="display:inline;">
                                 @csrf
-                                <button type="submit" class="btn btn-link p-0">
-                                    @if (auth()->user() && $post->likes->contains(auth()->user()))
-                                        <i class="ti-heart text-danger"></i> <!-- Заповнене серце -->
+                                <button type="submit" class="btn btn-link p-0" style="border: none; background: none;">
+                                    @if (Auth::check() && $post->likes()->where('user_id', Auth::id())->exists())
+                                        <i class="fas fa-heart text-danger"></i>
                                     @else
-                                        <i class="ti-heart"></i> <!-- Пусте серце -->
+                                        <i class="far fa-heart"></i>
                                     @endif
                                 </button>
-                            </form>                            
+                            </form>
+                                            
                         </small>
                     </div>
                     <div class="card-body border-top">
@@ -103,26 +74,37 @@
                                 <div class="media-body">
                                     <h6 class="mt-0">{{ $comment->user->username }}</h6>
                                     <p>{{ $comment->content }}</p>
-                                    <a href="#" class="text-dark small font-weight-bold"><i class="ti-back-right"></i> Reply</a>
+                                    <!-- Опціонально: видалення коментаря -->
+                                    @if (Auth::check() && (Auth::id() == $comment->user_id || Auth::user()->role === 'admin'))
+                                        <form action="{{ route('comments.destroy', $comment) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-link text-danger p-0">Delete</button>
+                                        </form>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach
 
                         <!-- Comment Form -->
-                        <h6 class="mt-5 mb-3 text-center"><a href="#" class="text-dark">Write Your Comment</a></h6>
-                        <hr>
-                        <!-- Форма для написання коментаря -->
-                        <form action="{{ route('comments.store', $post) }}" method="POST">
-                            @csrf
-                            <div class="form-row">
-                                <div class="col-12 form-group">
-                                    <textarea name="content" id="" cols="30" rows="5" class="form-control" placeholder="Enter Your Comment Here"></textarea>
+                        @if (Auth::check())
+                            <h6 class="mt-5 mb-3 text-center"><a href="#" class="text-dark">Write Your Comment</a></h6>
+                            <hr>
+                            <!-- Форма для написання коментаря -->
+                            <form action="{{ route('comments.store', $post) }}" method="POST">
+                                @csrf
+                                <div class="form-row">
+                                    <div class="col-12 form-group">
+                                        <textarea name="content" id="" cols="30" rows="5" class="form-control" placeholder="Enter Your Comment Here" required></textarea>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <button class="btn btn-primary btn-block">Post Comment</button>
+                                    </div>
                                 </div>
-                                <div class="form-group col-12">
-                                    <button class="btn btn-primary btn-block">Post Comment</button>
-                                </div>
-                            </div>
-                        </form>
+                            </form>
+                        @else
+                            <p class="text-center">Please <a href="{{ route('login') }}">login</a> to comment.</p>
+                        @endif
                     </div>                  
                 </div> 
             </div>
