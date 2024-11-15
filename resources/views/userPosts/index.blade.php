@@ -1,20 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Start your development with JoeBLog landing page.">
-    <meta name="author" content="Devcrud">
-    <title>JoeBLog | Blog Template</title>
-    <!-- font icons -->
-    <link rel="stylesheet" href="{{ asset('assets/vendors/themify-icons/css/themify-icons.css') }}">
-    <!-- Bootstrap + JoeBLog main styles -->
-    <link rel="stylesheet" href="{{ asset('assets/css/joeblog.css') }}">
-</head>
-<body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
 
     @include('layouts.navigationUser')
-    
+
     <!-- page-header -->
     <header class="page-header" style="display: flex; flex-direction: column; justify-content: center; text-align: center; color: black;">
         <h1>Блог про психологію та саморозвиток</h1>
@@ -25,7 +11,7 @@
     <div class="container">
         <section>
             <div class="feature-posts">
-                <a href="" class="feature-post-item">                       
+                <a href="" class="feature-post-item">
                     <span>Featured Posts</span>
                 </a>
                 <a href="" class="feature-post-item">
@@ -47,7 +33,7 @@
             </div>
         </section>
         <hr>
-        
+
         <!-- Page Content -->
         <div class="page-container">
             <div class="page-content">
@@ -99,7 +85,7 @@
                                 </option>
                             @endforeach
                         </select>
-                    </div>                
+                    </div>
                     <div class="form-group">
                         <label for="from_date">З дати:</label>
                         <input type="date" name="from_date" id="from_date" class="form-control">
@@ -112,14 +98,14 @@
                         <label for="search">Пошук за назвою:</label>
                         <input type="text" name="search" id="search" class="form-control">
                     </div>
-                    
+
                     @if(!empty($activeFilters['categories']) || !empty($activeFilters['search']) || !empty($activeFilters['from_date']) || !empty($activeFilters['to_date']))
                         <div class="active-filters mb-4">
                             <h6>Активні фільтри:</h6>
                             <ul class="list-group">
                                 @if(!empty($activeFilters['categories']))
                                     <li class="list-group-item">
-                                        Категорії: 
+                                        Категорії:
                                         @foreach($categories->whereIn('category_id', $activeFilters['categories']) as $category)
                                             <span class="badge badge-primary">{{ $category->name }}</span>
                                         @endforeach
@@ -141,7 +127,7 @@
                     <!-- Кнопки для фільтрації -->
                     <button type="submit" class="btn btn-primary">Застосувати фільтри</button>
                     <a href="{{ route('userPosts.index') }}" class="btn btn-secondary" style="margin: 10px 0px">Очистити фільтри</a>
-                </form>        
+                </form>
             </div>
         </div>
     </div>

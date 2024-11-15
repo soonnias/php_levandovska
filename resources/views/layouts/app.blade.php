@@ -25,6 +25,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('users.index') }}">Користувачі</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('category-products.index') }}">Категорії пр.</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('products.index') }}">Продукти</a>
+                    </li>
                 </ul>
 
                 <!-- Додаємо блок із правого боку навігації -->

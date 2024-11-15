@@ -1,4 +1,20 @@
 <!-- resources/views/layouts/navigation.blade.php -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Start your development with JoeBLog landing page.">
+    <meta name="author" content="Devcrud">
+    <title>JoeBLog | Blog Template</title>
+    <!-- font icons -->
+    <link rel="stylesheet" href="{{ asset('assets/vendors/themify-icons/css/themify-icons.css') }}">
+    <!-- Bootstrap + JoeBLog main styles -->
+    <link rel="stylesheet" href="{{ asset('assets/css/joeblog.css') }}">
+</head>
+<body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
+
 <nav class="navbar navbar-light bg-light">
     <div class="container">
         <a class="navbar-brand" href="#">
@@ -19,12 +35,20 @@
         <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarSupportedContent">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('userPosts.index') }}">Home</a>
+                    <a class="nav-link" href="{{ route('userPosts.index') }}">Posts</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('userProducts.index') }}">Shop</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('carts.show', ['userId' => auth()->id()]) }}">Cart</a>
                 </li>
             </ul>
+
+            <!-- Цей ul буде відображатися по правому краю завдяки ms-auto -->
             <ul class="navbar-nav ms-auto">
                 @auth
                     <li class="nav-item d-flex align-items-center">
@@ -39,5 +63,6 @@
                 @endauth
             </ul>
         </div>
+
     </div>
 </nav>

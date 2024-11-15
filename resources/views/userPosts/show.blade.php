@@ -1,20 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="{{ $post->description }}">
-   
-    <title>{{ $post->title }}</title>
-    <!-- font icons -->
-    <link rel="stylesheet" href="{{ asset('assets/vendors/themify-icons/css/themify-icons.css') }}">
-    <!-- Bootstrap + main styles -->
-	<link rel="stylesheet" href="{{ asset('assets/css/joeblog.css') }}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
-</head>
-<body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
-    @include('layouts.navigationUser')
+@include('layouts.navigationUser')
 
     <!-- Page Header -->
     <header class="page-header page-header-mini">
@@ -37,7 +21,7 @@
                             @foreach ($post->categories as $category)
                                 <a href="#" class="badge badge-primary">#{{ $category->name }}</a>
                             @endforeach
-                        </div>  
+                        </div>
                         <small class="small text-muted">
                             <span>{{ $post->created_at->format('F d, Y')}}</span>
                             <span class="px-2">·</span>
@@ -45,7 +29,7 @@
                             <span class="px-2">·</span>
                             <span class="text-muted">{{ $post->likes->count() }} Likes</span>
                             <span class="px-2">·</span>
-                            
+
                             <!-- Іконка лайка -->
                             <form action="{{ route('likes.toggle', $post) }}" method="POST" style="display:inline;">
                                 @csrf
@@ -57,13 +41,13 @@
                                     @endif
                                 </button>
                             </form>
-                                            
+
                         </small>
                     </div>
                     <div class="card-body border-top">
-                        <p class="my-3">{{ $post->description }}</p> 
+                        <p class="my-3">{{ $post->description }}</p>
                     </div>
-                    
+
                     <!-- Comments Section -->
                     <div class="card-footer">
                          <h6 class="mt-5 mb-3 text-center"><a href="#" class="text-dark">Comments {{ $post->comments->count() }}</a></h6>
@@ -105,8 +89,8 @@
                         @else
                             <p class="text-center">Please <a href="{{ route('login') }}">login</a> to comment.</p>
                         @endif
-                    </div>                  
-                </div> 
+                    </div>
+                </div>
             </div>
            <!-- Sidebar -->
             <div class="page-sidebar">
@@ -121,15 +105,15 @@
                         {{ $category->name }}
                     </a>
                 @endforeach
-            </div>        
+            </div>
         </div>
     </section>
 
     <!-- Page Footer -->
     <footer class="page-footer">
         <div class="container">
-            <p class="border-top mb-0 mt-4 pt-3 small">&copy; <script>document.write(new Date().getFullYear())</script>, JoeBlog Created By <a href="https://www.devcrud.com" class="text-muted font-weight-bold" target="_blank">DevCrud.</a>  All rights reserved </p> 
-        </div>      
+            <p class="border-top mb-0 mt-4 pt-3 small">&copy; <script>document.write(new Date().getFullYear())</script>, JoeBlog Created By <a href="https://www.devcrud.com" class="text-muted font-weight-bold" target="_blank">DevCrud.</a>  All rights reserved </p>
+        </div>
     </footer>
     <!-- End of Page Footer -->
 

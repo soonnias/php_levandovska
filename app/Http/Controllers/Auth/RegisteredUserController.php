@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -34,12 +35,16 @@ class RegisteredUserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
-    
+
         $user = User::create([
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password), // Хешування пароля
             'role' => 'user',
+        ]);
+
+        Cart::create([
+            'user_id' => $user->user_id,
         ]);
 
         event(new Registered($user));
@@ -48,7 +53,7 @@ class RegisteredUserController extends Controller
 
          // Редірект в залежності від ролі
         if ($user->isAdmin()) {
-            return redirect(route('posts.index')); 
+            return redirect(route('posts.index'));
         } else {
             return redirect(route('userPosts.index'));
         }
