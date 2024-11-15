@@ -16,11 +16,6 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-// Сторінка Dashboard з перевіркою аутентифікації
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 // Група маршрутів, захищених аутентифікацією
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
