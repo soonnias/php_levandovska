@@ -10,7 +10,9 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\UserPostController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserProductController;
+use App\Http\Controllers\UserOrderController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +51,12 @@ Route::middleware('auth')->group(function () {
 
         Route::resource('category-products', CategoryProductController::class);
         Route::resource('products', ProductController::class);
+
+
+        // Замовлення
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/{orderId}', [OrderController::class, 'show'])->name('orders.show');
+        Route::post('//orders/{orderId}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     });
 
     // Коментарі
@@ -79,6 +87,16 @@ Route::middleware('auth')->group(function () {
         // Оновити кількість товару
         Route::patch('/{itemId}', [CartItemController::class, 'update'])->name('cartItems.update');
     });
+
+    // Перегляд замовлень користувача
+    Route::get('/userOrders', [UserOrderController::class, 'index'])->name('userOrders.index');
+    // Оформлення замовлення
+    Route::post('/userOrders', [UserOrderController::class, 'store'])->name('userOrders.store');
+    // Створення замовлення (форма)
+    Route::get('/userOrders/create', [UserOrderController::class, 'create'])->name('userOrders.create');
+    // Перегляд детальної інформації про замовлення
+    Route::get('/userOrders/{order}', [UserOrderController::class, 'show'])->name('userOrders.show');
+
 });
 
 // Обробка неіснуючих маршрутів

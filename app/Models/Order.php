@@ -13,6 +13,10 @@ class Order extends Model
         'user_id',
         'total_price',
         'status',
+        'delivery_address',
+        'customer_name',
+        'customer_surname',
+        'customer_phone',
     ];
 
     // Визначаємо зв'язок з користувачем
@@ -25,5 +29,15 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * @param string[] $fillable
+     * @return Order
+     */
+    public function setFillable(array $fillable): Order
+    {
+        $this->fillable = $fillable;
+        return $this;
     }
 }

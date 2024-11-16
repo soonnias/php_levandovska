@@ -4,6 +4,9 @@
 <div class="container mt-5">
     <h1>Ваш кошик</h1>
 
+    {{-- помилки валідації --}}
+    @include('layouts.validation-errors')
+
     @if ($cart && count($items) > 0)
         <table class="table table-striped">
             <thead>
@@ -44,11 +47,12 @@
             </tbody>
         </table>
 
-        <!-- Загальна сума кошика -->
-        <div class="d-flex justify-content-between">
+        <!-- Форма для оформлення замовлення -->
+        <form action="{{ route('userOrders.create') }}" method="GET" class="d-flex justify-content-between">
             <h4>Загальна вартість: $<span id="total-cart-price">{{ $totalPrice }}</span></h4> <!-- Вартість кошика -->
-            <a href="#" class="btn btn-primary">Оформити замовлення</a>
-        </div>
+            <input type="hidden" name="cart_id" value="{{ $cart->id }}">
+            <button type="submit" class="btn btn-primary">Оформити замовлення</button>
+        </form>
 
         <!-- Кнопка для очищення кошика -->
         <form action="{{ route('carts.clear', ['userId' => $cart->user_id]) }}" method="POST">

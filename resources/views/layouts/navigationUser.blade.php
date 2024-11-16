@@ -46,6 +46,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('carts.show', ['userId' => auth()->id()]) }}">Cart</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('userOrders.index', ['userId' => auth()->id()]) }}">Orders</a>
+                </li>
             </ul>
 
             <!-- Цей ul буде відображатися по правому краю завдяки ms-auto -->

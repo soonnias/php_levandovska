@@ -7,50 +7,44 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    // Показати замовлення користувача
-    public function show($userId)
+    // Показати всі замовлення з можливістю фільтрації
+    public function index(Request $request)
     {
-        // Отримуємо всі замовлення користувача
-        $orders = Order::where('user_id', $userId)->get();
-        
-        return view('orders.index', compact('orders'));
+        $status = $request->input('status');
+
+        // Якщо статус вказаний, фільтруємо за статусом, інакше виводимо всі замовлення
+        if ($status) {
+            $orders = Order::where('status', $status)->get();
+        } else {
+            $orders = Order::all();
+        }
+
+        return view('orders.index', compact('orders', 'status'));
     }
 
-    // Створити нове замовлення
-    public function store(Request $request, $userId)
+    // Показати деталі конкретного замовлення
+    public function show($orderId)
     {
-        // Валідація
-        $request->validate([
-            'total_price' => 'required|numeric',
-            'status' => 'required|string',
-        ]);
+        $order = Order::findOrFail($orderId);
 
-        // Створюємо замовлення
-        $order = Order::create([
-            'user_id' => $userId,
-            'total_price' => $request->total_price,
-            'status' => $request->status,
-        ]);
-
-        return redirect()->route('orders.show', ['userId' => $userId])->with('success', 'Order created!');
+        return view('orders.show', compact('order'));
     }
 
     // Оновити статус замовлення
     public function updateStatus(Request $request, $orderId)
     {
-        // Валідація
         $request->validate([
             'status' => 'required|string',
         ]);
 
-        // Знайти замовлення
         $order = Order::findOrFail($orderId);
-        
-        // Оновити статус
+
         $order->update([
             'status' => $request->status,
         ]);
 
-        return redirect()->route('orders.show', ['userId' => $order->user_id])->with('success', 'Order status updated!');
+        return redirect()->route('orders.show', $orderId)
+            ->with('success', 'Статус замовлення оновлено!');
     }
 }
+
