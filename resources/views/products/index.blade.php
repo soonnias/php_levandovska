@@ -12,6 +12,7 @@
                 <th>Ціна</th>
                 <th>Картинка</th>
                 <th>Категорія</th>
+                <th>Статус</th> <!-- Новий стовпчик -->
                 <th>Дії</th>
             </tr>
             </thead>
@@ -27,6 +28,13 @@
                         @endif
                     </td>
                     <td>{{ $product->category->name ?? 'No Category' }}</td>
+                    <td>
+                        @if($product->is_available)
+                            <span class="badge bg-success">Доступний</span>
+                        @else
+                            <span class="badge bg-danger">Недоступний</span>
+                        @endif
+                    </td>
                     <td>
                         <a href="{{ route('products.edit', $product->id) }}" class="btn btn-primary btn-sm">Редагувати</a>
                         <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:inline-block;">

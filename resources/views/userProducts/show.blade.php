@@ -28,19 +28,26 @@
 
                 <!-- Add to Cart Section -->
                 <div class="card-footer">
-                    @if(isset($cart) && $cart->id)
-                        <form action="{{ route('cartItems.store', ['cartId' => $cart->id]) }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                            <div class="form-group">
-                                <label for="quantity">Кількість:</label>
-                                <input type="number" name="quantity" id="quantity" class="form-control" value="1" min="1">
+                    @if($product->is_available)
+                        @if(isset($cart) && $cart->id)
+                            <form action="{{ route('cartItems.store', ['cartId' => $cart->id]) }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <div class="form-group">
+                                    <label for="quantity">Кількість:</label>
+                                    <input type="number" name="quantity" id="quantity" class="form-control" value="1" min="1">
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block">Додати до кошика</button>
+                            </form>
+                        @else
+                            <div class="alert alert-warning">
+                                У вас ще немає кошика.
+                                <a href="{{ route('carts.create', ['userId' => auth()->id()]) }}" class="btn btn-sm btn-primary">Створити кошик</a>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block">Додати до кошика</button>
-                        </form>
+                        @endif
                     @else
-                        <div class="alert alert-warning">
-                            У вас ще немає кошика. <a href="{{ route('carts.create', ['userId' => auth()->id()]) }}" class="btn btn-sm btn-primary">Створити кошик</a>
+                        <div class="alert alert-danger">
+                            Цей продукт недоступний для замовлення.
                         </div>
                     @endif
                 </div>

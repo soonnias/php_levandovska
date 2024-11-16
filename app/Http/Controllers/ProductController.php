@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CategoryProduct;
 use App\Models\Product;
+use App\Models\CartItem;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -47,6 +48,10 @@ class ProductController extends Controller
             'category_id' => [
                 'nullable',
                 'exists:category_products,id',
+            ],
+            'is_available' => [
+                'required',
+                'boolean'
             ],
         ]);
 
@@ -96,10 +101,23 @@ class ProductController extends Controller
                 'nullable',
                 'exists:category_products,id',
             ],
+            'is_available' => [
+                'required',
+                'boolean'
+            ],
         ]);
 
         $product = Product::findOrFail($id);
+
+        // Перевіряємо, чи змінюється статус доступності на "недоступний"
+        $wasAvailable = $product->is_available;
         $product->update($request->all());
+
+        if ($wasAvailable && !$request->is_available) {
+            // Видаляємо всі записи з cart_items для цього продукту
+            CartItem::where('product_id', $product->id)->delete();
+        }
+
 
         return redirect()->route('products.index')->with('success', 'Product updated successfully!');
     }

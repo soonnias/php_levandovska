@@ -37,6 +37,11 @@
                     @endforeach
                 </select>
             </div>
+            <div class="mb-3">
+                <label for="is_available" class="form-label">Доступний</label>
+                <input type="hidden" name="is_available" value="0"> <!-- Приховане поле -->
+                <input type="checkbox" id="is_available" name="is_available" value="1" {{ $product->is_available ? 'checked' : '' }}>
+            </div>
             <button type="submit" class="btn btn-primary">Оновити</button>
         </form>
     </div>

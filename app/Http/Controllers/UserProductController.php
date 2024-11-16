@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\CategoryProduct; // Ваші категорії
+use App\Models\CategoryProduct;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 
 class UserProductController extends Controller
@@ -35,7 +36,7 @@ class UserProductController extends Controller
             $query->whereIn('category_id', $categoryIds);
         }
 
-        // Інші фільтри (ціна, дата)
+        // Фільтрація за ціною
         if ($request->filled('from_price')) {
             $query->where('price', '>=', $request->input('from_price'));
         }
@@ -55,11 +56,12 @@ class UserProductController extends Controller
             'categories' => $request->input('categories', []),
             'search' => $request->input('search', ''),
             'from_price' => $request->input('from_price', ''),
-            'to_price' => $request->input('to_price', ''),
+            'to_price' => $request->input('to_price', '')
         ];
 
         return view('userProducts.index', compact('products', 'categories', 'activeFilters'));
     }
+
 
     public function show($id)
     {

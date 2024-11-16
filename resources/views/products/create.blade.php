@@ -34,6 +34,11 @@
                     @endforeach
                 </select>
             </div>
+            <div class="mb-3">
+                <label for="is_available" class="form-label">Доступний</label>
+                <input type="checkbox" id="is_available" name="is_available" value="1" checked>
+            </div>
+
             <button type="submit" class="btn btn-primary">Створити</button>
         </form>
     </div>
