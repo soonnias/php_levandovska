@@ -31,6 +31,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('products.index') }}">Продукти</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('orders.index') }}">Замовлення</a>
+                    </li>
                 </ul>
 
                 <!-- Додаємо блок із правого боку навігації -->

@@ -35,6 +35,38 @@ Route::middleware('auth')->group(function () {
         Route::resource('userPosts', UserPostController::class)->only(['index', 'store', 'show', 'edit', 'update', 'destroy']);
         Route::post('posts/{post}/likes/toggle', [LikeController::class, 'toggle'])->name('likes.toggle');
         Route::post('posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
+
+        // Усі товари
+        Route::get('/user-products', [UserProductController::class, 'index'])->name('userProducts.index');
+        Route::get('/user-products/{id}', [UserProductController::class, 'show'])->name('userProducts.show');
+
+        // Кошик
+        Route::prefix('cart')->group(function () {
+            // Показати кошик
+            Route::get('/{userId}', [CartController::class, 'show'])->name('carts.show');
+            // Створити кошик для користувача
+            Route::post('/create/{userId}', [CartController::class, 'create'])->name('carts.create');
+            // Очистити кошик
+            Route::delete('/{userId}/clear', [CartController::class, 'clear'])->name('carts.clear');
+        });
+        // Елементи кошика
+        Route::prefix('cart/{cartId}/items')->group(function () {
+            // Додати товар у кошик
+            Route::post('/', [CartItemController::class, 'store'])->name('cartItems.store');
+            // Видалити товар з кошика
+            Route::delete('/{itemId}', [CartItemController::class, 'destroy'])->name('cartItems.destroy');
+            // Оновити кількість товару
+            Route::patch('/{itemId}', [CartItemController::class, 'update'])->name('cartItems.update');
+        });
+
+        // Перегляд замовлень користувача
+        Route::get('/userOrders', [UserOrderController::class, 'index'])->name('userOrders.index');
+        // Оформлення замовлення
+        Route::post('/userOrders', [UserOrderController::class, 'store'])->name('userOrders.store');
+        // Створення замовлення (форма)
+        Route::get('/userOrders/create', [UserOrderController::class, 'create'])->name('userOrders.create');
+        // Перегляд детальної інформації про замовлення
+        Route::get('/userOrders/{order}', [UserOrderController::class, 'show'])->name('userOrders.show');
     });
 
     // Доступ для 'admin' \
@@ -52,7 +84,6 @@ Route::middleware('auth')->group(function () {
         Route::resource('category-products', CategoryProductController::class);
         Route::resource('products', ProductController::class);
 
-
         // Замовлення
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{orderId}', [OrderController::class, 'show'])->name('orders.show');
@@ -63,40 +94,6 @@ Route::middleware('auth')->group(function () {
     Route::get('posts/{post}/comments', [CommentController::class, 'index'])->name('comments.index');
     Route::post('posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
-
-    // Усі товари
-    Route::get('/user-products', [UserProductController::class, 'index'])->name('userProducts.index');
-    Route::get('/user-products/{id}', [UserProductController::class, 'show'])->name('userProducts.show');
-
-    // Кошик
-    Route::prefix('cart')->group(function () {
-        // Показати кошик
-        Route::get('/{userId}', [CartController::class, 'show'])->name('carts.show');
-        // Створити кошик для користувача
-        Route::post('/create/{userId}', [CartController::class, 'create'])->name('carts.create');
-        // Очистити кошик
-        Route::delete('/{userId}/clear', [CartController::class, 'clear'])->name('carts.clear');
-    });
-
-// Елементи кошика
-    Route::prefix('cart/{cartId}/items')->group(function () {
-        // Додати товар у кошик
-        Route::post('/', [CartItemController::class, 'store'])->name('cartItems.store');
-        // Видалити товар з кошика
-        Route::delete('/{itemId}', [CartItemController::class, 'destroy'])->name('cartItems.destroy');
-        // Оновити кількість товару
-        Route::patch('/{itemId}', [CartItemController::class, 'update'])->name('cartItems.update');
-    });
-
-    // Перегляд замовлень користувача
-    Route::get('/userOrders', [UserOrderController::class, 'index'])->name('userOrders.index');
-    // Оформлення замовлення
-    Route::post('/userOrders', [UserOrderController::class, 'store'])->name('userOrders.store');
-    // Створення замовлення (форма)
-    Route::get('/userOrders/create', [UserOrderController::class, 'create'])->name('userOrders.create');
-    // Перегляд детальної інформації про замовлення
-    Route::get('/userOrders/{order}', [UserOrderController::class, 'show'])->name('userOrders.show');
-
 });
 
 // Обробка неіснуючих маршрутів

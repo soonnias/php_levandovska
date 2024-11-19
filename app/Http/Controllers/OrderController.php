@@ -12,15 +12,17 @@ class OrderController extends Controller
     {
         $status = $request->input('status');
 
-        // Якщо статус вказаний, фільтруємо за статусом, інакше виводимо всі замовлення
         if ($status) {
-            $orders = Order::where('status', $status)->get();
+            $orders = Order::where('status', $status)
+                ->orderBy('created_at', 'desc')
+                ->get();
         } else {
-            $orders = Order::all();
+            $orders = Order::orderBy('created_at', 'desc')->get();
         }
 
         return view('orders.index', compact('orders', 'status'));
     }
+
 
     // Показати деталі конкретного замовлення
     public function show($orderId)
